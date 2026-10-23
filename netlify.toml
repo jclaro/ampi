@@ -1,0 +1,89 @@
+# =============================================================================
+# AMPI — Netlify deployment configuration
+# Next.js 15 App Router with ISR via `export const revalidate`
+# =============================================================================
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Pin the Node.js major version. Next.js 15 requires Node 18+; use 20 LTS.
+  NODE_VERSION = "20"
+  # Increase the V8 heap when building pages with heavy dependencies
+  # (MapLibre GL, Three.js). Adjust down if not needed.
+  NODE_OPTIONS = "--max_old_space_size=4096"
+
+# The official plugin bridges Next.js ISR, Server Components, and API routes
+# to Netlify's infrastructure. Do NOT remove it — without it the build output
+# is treated as a static export and ISR will not function.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# =============================================================================
+# Deploy contexts
+# =============================================================================
+
+[context.production]
+  # No overrides needed: ISR TTLs are declared in each page file.
+
+[context.deploy-preview]
+  # Previews build and run identically to production so ISR is exercised.
+  # If you want previews to always bypass CDN cache for review purposes,
+  # add: command = "npm run build" (no changes needed here by default).
+
+[context.branch-deploy]
+  # Branch deploys inherit production settings.
+
+# =============================================================================
+# HTTP Headers
+# =============================================================================
+
+# --- Immutable static assets produced by Next.js ---
+# Next.js content-hashes every file under /_next/static/ so they are safe to
+# cache forever in both the browser and the CDN.
+# We set Netlify-CDN-Cache-Control separately from Cache-Control so that:
+#   • The CDN stores the asset indefinitely (s-maxage=31536000).
+#   • Browsers also cache it indefinitely (max-age=31536000, immutable).
+# This does NOT interfere with ISR because ISR operates on HTML pages and
+# server-rendered routes, not on these hashed JS/CSS/font bundles.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Netlify-CDN-Cache-Control = "public, max-age=31536000, immutable"
+
+# --- Next.js image optimisation endpoint ---
+# Images served through /_next/image are already processed; cache them at
+# the CDN edge for 1 day and allow browser caching for 1 hour.
+[[headers]]
+  for = "/_next/image*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, s-maxage=86400"
+    Netlify-CDN-Cache-Control = "public, max-age=86400"
+
+# --- ISR pages: intentionally no Cache-Control override here ---
+#
+# @netlify/plugin-nextjs automatically emits the correct Netlify-CDN-Cache-Control
+# and Cache-Tag headers for every ISR route based on the `revalidate` value and
+# the `tags` supplied in each fetch() call. Overriding those headers globally
+# would bypass the plugin's ISR machinery and break on-demand revalidation.
+#
+# Current ISR TTLs declared in the app:
+#   /[slug]   → 1800 s  (previsão por localidade)
+#   /avisos   → 600 s   (avisos meteorológicos)
+#   /sismos   → 300 s   (sismos)
+#   /mapa     → 86400 s (estações / localidades)
+#   /         → Next.js default (static, no revalidate declared)
+#
+# The CDN will serve the cached HTML until the TTL expires, so two simultaneous
+# visitors within the same TTL window will NOT generate separate IPMA requests.
+
+# --- Security headers applied to all routes ---
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(self), camera=(), microphone=()"

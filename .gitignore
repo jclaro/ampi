@@ -1,0 +1,31 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+out
+build
+next-env.d.ts
+
+# testing
+coverage
+playwright-report
+test-results
+
+# production / env
+.env*.local
+.env
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS
+.DS_Store
+.vscode
+.idea
+
+# debug artifacts (screenshots, HAR captures)
+shot*.png
+shot*.mjs
+*.har

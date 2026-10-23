@@ -1,0 +1,147 @@
+[
+{
+"idRegiao": 1,
+"idDistrito": 1,
+"nome": "Aveiro"
+},
+{
+"idRegiao": 1,
+"idDistrito": 2,
+"nome": "Beja"
+},
+{
+"idRegiao": 1,
+"idDistrito": 3,
+"nome": "Braga"
+},
+{
+"idRegiao": 1,
+"idDistrito": 4,
+"nome": "Bragança"
+},
+{
+"idRegiao": 1,
+"idDistrito": 5,
+"nome": "Castelo Branco"
+},
+{
+"idRegiao": 1,
+"idDistrito": 6,
+"nome": "Coimbra"
+},
+{
+"idRegiao": 1,
+"idDistrito": 7,
+"nome": "Évora"
+},
+{
+"idRegiao": 1,
+"idDistrito": 8,
+"nome": "Faro"
+},
+{
+"idRegiao": 1,
+"idDistrito": 9,
+"nome": "Guarda"
+},
+{
+"idRegiao": 1,
+"idDistrito": 10,
+"nome": "Leiria"
+},
+{
+"idRegiao": 1,
+"idDistrito": 11,
+"nome": "Lisboa"
+},
+{
+"idRegiao": 1,
+"idDistrito": 12,
+"nome": "Portalegre"
+},
+{
+"idRegiao": 1,
+"idDistrito": 13,
+"nome": "Porto"
+},
+{
+"idRegiao": 1,
+"idDistrito": 14,
+"nome": "Santarém"
+},
+{
+"idRegiao": 1,
+"idDistrito": 15,
+"nome": "Setúbal"
+},
+{
+"idRegiao": 1,
+"idDistrito": 16,
+"nome": "Viana do Castelo"
+},
+{
+"idRegiao": 1,
+"idDistrito": 17,
+"nome": "Vila Real"
+},
+{
+"idRegiao": 1,
+"idDistrito": 18,
+"nome": "Viseu"
+},
+{
+"idRegiao": 2,
+"idDistrito": 31,
+"nome": "Madeira"
+},
+{
+"idRegiao": 2,
+"idDistrito": 32,
+"nome": "Porto Santo"
+},
+{
+"idRegiao": 3,
+"idDistrito": 41,
+"nome": "Santa Maria"
+},
+{
+"idRegiao": 3,
+"idDistrito": 42,
+"nome": "São Miguel"
+},
+{
+"idRegiao": 3,
+"idDistrito": 43,
+"nome": "Terceira"
+},
+{
+"idRegiao": 3,
+"idDistrito": 44,
+"nome": "Graciosa"
+},
+{
+"idRegiao": 3,
+"idDistrito": 45,
+"nome": "São Jorge"
+},
+{
+"idRegiao": 3,
+"idDistrito": 46,
+"nome": "Pico"
+},
+{
+"idRegiao": 3,
+"idDistrito": 47,
+"nome": "Faial"
+},
+{
+"idRegiao": 3,
+"idDistrito": 48,
+"nome": "Flores"
+},
+{
+"idRegiao": 3,
+"idDistrito": 49,
+"nome": "Corvo"
+}
+]
