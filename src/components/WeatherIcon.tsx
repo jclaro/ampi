@@ -1,7 +1,7 @@
 import { weatherTypeLabel } from "@/lib/ipma/weather-types";
 import { iconName } from "@/lib/ipma/weather-icons";
 
-/** Considera noite entre as 20h e as 7h (hora local da previsão). */
+/** Noite entre as 20h e as 7h (hora local da previsão do IPMA). */
 function isNight(date?: string): boolean {
   if (!date) return false;
   const h = new Date(date).getHours();

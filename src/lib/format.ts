@@ -5,16 +5,15 @@ export function temp(v: number | null): string {
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
-/** Nome curto do dia da semana a partir de uma data ISO. */
+// `dataPrev` do IPMA é hora local de Portugal; `new Date(iso)` basta.
+/** Nome curto do dia da semana a partir de uma data do IPMA. */
 export function weekday(iso: string): string {
-  const d = new Date(iso);
-  return WEEKDAYS[d.getDay()];
+  return WEEKDAYS[new Date(iso).getDay()];
 }
 
-/** Hora "HH" a partir de uma data ISO. */
+/** Hora "HHh" a partir de uma data do IPMA. */
 export function hour(iso: string): string {
-  const d = new Date(iso);
-  return `${String(d.getHours()).padStart(2, "0")}h`;
+  return `${String(new Date(iso).getHours()).padStart(2, "0")}h`;
 }
 
 /** Percentagem de precipitação, ou vazio se ausente. */

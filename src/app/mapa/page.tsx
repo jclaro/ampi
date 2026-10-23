@@ -1,6 +1,7 @@
 import { getStations } from "@/lib/ipma/stations";
 import { getObservations } from "@/lib/ipma/observations";
 import { MapView } from "@/components/MapView";
+import { Attribution } from "@/components/Attribution";
 
 export const revalidate = 1800;
 
@@ -23,13 +24,7 @@ export default async function MapPage() {
         </p>
       </div>
       <MapView stations={points} />
-      <footer className="px-4 text-center text-xs text-slate-400">
-        Dados:{" "}
-        <a href="https://www.ipma.pt" className="underline" rel="noreferrer">
-          IPMA
-        </a>{" "}
-        · Mapa © OpenStreetMap
-      </footer>
+      <Attribution extra="Mapa © OpenStreetMap" />
     </main>
   );
 }

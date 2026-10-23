@@ -1,6 +1,7 @@
 import { getWarnings, activeWarnings } from "@/lib/ipma/warnings";
 import { getLocations } from "@/lib/ipma/forecast";
 import { WarningsView } from "@/components/WarningsView";
+import { Attribution } from "@/components/Attribution";
 
 export const revalidate = 600;
 
@@ -16,12 +17,7 @@ export default async function WarningsPage() {
     <main className="mx-auto flex max-w-xl flex-col gap-4 px-4 py-8">
       <h1 className="text-2xl font-semibold tracking-tight">Avisos</h1>
       <WarningsView warnings={active} areaBySlug={areaBySlug} />
-      <footer className="pt-4 text-center text-xs text-slate-400">
-        Dados:{" "}
-        <a href="https://www.ipma.pt" className="underline" rel="noreferrer">
-          IPMA
-        </a>
-      </footer>
+      <Attribution />
     </main>
   );
 }

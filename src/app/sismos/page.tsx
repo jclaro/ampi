@@ -1,4 +1,5 @@
 import { getSeismic } from "@/lib/ipma/seismic";
+import { Attribution } from "@/components/Attribution";
 
 export const revalidate = 300;
 
@@ -50,12 +51,7 @@ export default async function SeismicPage() {
           </li>
         ))}
       </ul>
-      <footer className="pt-4 text-center text-xs text-slate-400">
-        Dados:{" "}
-        <a href="https://www.ipma.pt" className="underline" rel="noreferrer">
-          IPMA
-        </a>
-      </footer>
+      <Attribution />
     </main>
   );
 }

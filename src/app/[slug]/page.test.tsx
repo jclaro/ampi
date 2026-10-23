@@ -85,12 +85,12 @@ describe("Página /[slug]", () => {
     expect(alert).toHaveTextContent("Agitação Marítima");
   });
 
-  it("não mostra horas já passadas em 'próximas horas'", async () => {
+  it("começa na hora anterior à atual (como o IPMA), não em horas antigas", async () => {
     // Agora = 06:00 UTC = 07:00 em Lisboa (outubro, UTC+1).
-    // A 1ª célula deve ser >= 07h; a hora das 02:00/06:00 da fixture não aparece como 1ª.
+    // A tira começa na hora anterior (06h); não deve mostrar 02h/03h antigas como 1ª.
     await renderPage("lisboa");
     const label = screen.getAllByTestId("hour-label")[0].textContent ?? "";
     const hourNum = Number(label.replace("h", ""));
-    expect(hourNum).toBeGreaterThanOrEqual(7);
+    expect(hourNum).toBeGreaterThanOrEqual(6);
   });
 });

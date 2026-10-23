@@ -17,6 +17,7 @@ import { NowDetails } from "@/components/NowDetails";
 import { LocationSearch } from "@/components/LocationSearch";
 import { RememberLocation } from "@/components/RememberLocation";
 import { SaveButton } from "@/components/SaveButton";
+import { Attribution } from "@/components/Attribution";
 
 export const revalidate = 1800;
 export const dynamicParams = true; // slugs não pré-gerados renderizam on-demand e cacheiam
@@ -99,18 +100,7 @@ export default async function LocationPage({
         <NowDetails hour={now} fireRisk={fireRisk} uv={today?.uv ?? null} />
       )}
       <DailyList days={fiveDays} />
-      <footer className="px-4 pt-4 text-center text-xs text-slate-400">
-        Dados:{" "}
-        <a
-          href="https://www.ipma.pt"
-          className="underline"
-          rel="noreferrer"
-          target="_blank"
-        >
-          IPMA
-        </a>{" "}
-        · AMPI é uma visualização alternativa não-oficial.
-      </footer>
+      <Attribution />
     </main>
   );
 }

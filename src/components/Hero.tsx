@@ -3,7 +3,7 @@ import { weatherTypeLabel, isRainy } from "@/lib/ipma/weather-types";
 import { WeatherIcon } from "./WeatherIcon";
 import { temp } from "@/lib/format";
 
-/** É noite entre as 20h e as 7h (hora local da previsão). */
+/** Noite entre as 20h e as 7h (hora local da previsão). */
 function isNightHour(date: string): boolean {
   const h = new Date(date).getHours();
   return h >= 20 || h < 7;

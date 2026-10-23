@@ -39,7 +39,7 @@ export function HourlyStrip({
                   <span className="text-lg font-bold tabular-nums leading-none">
                     {temp(h.temp)}
                   </span>
-                  {/* Base: chuva → % de probabilidade; seco → vento */}
+                  {/* Base: chuva → % de probabilidade; seco → vento (km/h, distinto da temperatura) */}
                   {rainy && h.precipitationProb !== null ? (
                     <span
                       data-testid="hour-base-rain"
@@ -52,17 +52,17 @@ export function HourlyStrip({
                     h.windSpeed !== null && (
                       <span
                         data-testid="hour-base-wind"
-                        className="flex flex-col items-center text-[10px] leading-tight opacity-90"
+                        className="flex items-center gap-0.5 text-[9px] font-medium leading-none opacity-75"
                       >
                         <ArrowUp
-                          size={12}
+                          size={10}
                           aria-hidden
                           style={{
                             transform: `rotate(${windBearing(h.windDir)}deg)`,
                           }}
                         />
                         <span className="tabular-nums">
-                          {Math.round(h.windSpeed)}
+                          {Math.round(h.windSpeed)} km/h
                         </span>
                       </span>
                     )
