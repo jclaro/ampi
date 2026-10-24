@@ -1,21 +1,8 @@
 import type { Hourly, Location } from "@/lib/ipma/types";
-import { weatherTypeLabel, isRainy } from "@/lib/ipma/weather-types";
+import { weatherTypeLabel } from "@/lib/ipma/weather-types";
+import { conditionCircleClass } from "@/lib/ipma/condition-color";
 import { WeatherIcon } from "./WeatherIcon";
 import { temp } from "@/lib/format";
-
-/** Noite entre as 20h e as 7h (hora local da previsão). */
-function isNightHour(date: string): boolean {
-  const h = new Date(date).getHours();
-  return h >= 20 || h < 7;
-}
-
-/** Fundo neutro do círculo do Hero, por condição — deixa ver o ícone branco. */
-function heroCircleClass(weatherTypeId: number, date: string): string {
-  if (isNightHour(date)) return "bg-slate-800"; // noite → azul escuro
-  if (isRainy(weatherTypeId)) return "bg-slate-400"; // chuva → cinzento
-  if ([1, 2, 3, 5].includes(weatherTypeId)) return "bg-sky-300"; // limpo → azul claro
-  return "bg-slate-400"; // nublado/outros → cinzento
-}
 
 export function Hero({
   location,
@@ -46,9 +33,9 @@ export function Hero({
           {/* Círculo de acento com o ícone de condição (estilo Hello Weather) */}
           <div
             data-testid="hero-icon-circle"
-            className={`flex h-24 w-24 items-center justify-center rounded-full ${heroCircleClass(now.weatherTypeId, now.date)}`}
+            className={`flex h-24 w-24 items-center justify-center rounded-full ${conditionCircleClass(now.weatherTypeId, { date: now.date })}`}
           >
-            <WeatherIcon id={now.weatherTypeId} date={now.date} size={68} />
+            <WeatherIcon id={now.weatherTypeId} date={now.date} size={76} />
           </div>
 
           <div className="flex flex-col">
