@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import aggregateRaw from "@/lib/ipma/__fixtures__/aggregate-1110600.json";
 import locationsRaw from "@/lib/ipma/__fixtures__/locations.json";
 import fireRaw from "@/lib/ipma/__fixtures__/rcm-d0.json";
+import stationsRaw from "@/lib/ipma/__fixtures__/stations.json";
+import observationsRaw from "@/lib/ipma/__fixtures__/observations.json";
 
 // Aviso laranja sintético para a área de Lisboa (LSB), para testar o banner.
 const warningsRaw = {
@@ -33,6 +35,8 @@ vi.mock("@/lib/ipma/client", () => ({
     if (path.includes("/aggregate/")) return aggregateRaw;
     if (path.includes("/warnings/")) return warningsRaw;
     if (path.includes("/rcm/")) return fireRaw;
+    if (path.includes("/stations/stations.json")) return stationsRaw;
+    if (path.includes("/stations/observations.json")) return observationsRaw;
     throw new Error(`path não mockado: ${path}`);
   }),
 }));
