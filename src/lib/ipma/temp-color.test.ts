@@ -28,8 +28,31 @@ describe("tempColor (calibrado para PT: 0=azul, 20=amarelo, 38=vermelho)", () =>
     expect(hue(tempColor(38))).toBeLessThan(16);
   });
 
+  it("8° → azul, bem longe do verde (matiz > 180)", () => {
+    expect(hue(tempColor(8))).toBeGreaterThan(180);
+  });
+
+  it("12° → ainda azul/turquesa, não verde (matiz > 170)", () => {
+    expect(hue(tempColor(12))).toBeGreaterThan(170);
+  });
+
+  it("toda a gama amena 0–14 evita o verde (matiz > 160)", () => {
+    for (let t = 0; t <= 14; t++) {
+      expect(hue(tempColor(t))).toBeGreaterThan(160);
+    }
+  });
+
   it("é monotónica: mais quente → matiz menor", () => {
     expect(hue(tempColor(25))).toBeLessThan(hue(tempColor(10)));
+  });
+
+  it("monotonia fina: matiz nunca sobe de 0 a 38", () => {
+    let prev = Infinity;
+    for (let t = 0; t <= 38; t++) {
+      const h = hue(tempColor(t));
+      expect(h).toBeLessThanOrEqual(prev);
+      prev = h;
+    }
   });
 
   it("satura nos extremos sem rebentar", () => {
