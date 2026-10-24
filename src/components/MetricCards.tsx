@@ -37,6 +37,16 @@ function Card({
 
 const UV_SCALE_MAX = 11;
 
+// Nº de colunas (desktop) consoante os cartões de métrica presentes — varia
+// quando uma métrica não tem dados (ex: Mar no interior). Classes estáticas
+// para o Tailwind não as purgar.
+const GRID_COLS: Record<number, string> = {
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+  6: "lg:grid-cols-6",
+};
+
 /** Medidor visual de UV: escala fixa verde→vermelho com marcador na posição. */
 function UvMeter({ uv }: { uv: number }) {
   const pct = Math.min(100, (uv / UV_SCALE_MAX) * 100);
@@ -55,7 +65,7 @@ function UvMeter({ uv }: { uv: number }) {
 /** Card do nascer/pôr-do-sol, a toda a largura (dois horários + horas de luz). */
 function SunCard({ sun, moon }: { sun: SunTimes; moon?: MoonPhase | null }) {
   return (
-    <div className="col-span-2 flex flex-col gap-3 rounded-2xl bg-slate-100 p-4 dark:bg-slate-900 sm:col-span-3 lg:col-span-6">
+    <div className="col-span-full flex flex-col gap-3 rounded-2xl bg-slate-100 p-4 dark:bg-slate-900">
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -138,53 +148,61 @@ export function MetricCards({
 }) {
   const uvValue = uv ?? hour.uv;
   const dew = dewPoint(hour.temp, hour.humidity);
+
+  // Só os cartões com dados. O nº presente define as colunas em desktop, para
+  // a última linha não ficar com buracos quando uma métrica não existe.
+  const cards: React.ReactNode[] = [];
+  if (wind)
+    cards.push(
+      <Card
+        key="wind"
+        title="Vento"
+        value={wind.min === wind.max ? `${wind.max} km/h` : `${wind.min}–${wind.max} km/h`}
+        hint={wind.dir ?? undefined}
+      />,
+    );
+  if (uvValue !== null)
+    cards.push(
+      <Card key="uv" title="Índice UV" value={`${Math.round(uvValue)}`} hint={uvClass(uvValue)}>
+        <UvMeter uv={uvValue} />
+      </Card>,
+    );
+  if (hour.humidity !== null)
+    cards.push(
+      <Card
+        key="humidity"
+        title="Humidade"
+        value={`${Math.round(hour.humidity)}%`}
+        hint={dew !== null ? `Orvalho ${dew}°` : undefined}
+      />,
+    );
+  if (pressure != null)
+    cards.push(<Card key="pressure" title="Pressão" value={`${pressure} hPa`} />);
+  if (hour.sea && hour.sea.waterTemp !== null)
+    cards.push(
+      <Card
+        key="sea"
+        title="Mar"
+        value={`${Math.round(hour.sea.waterTemp)}°`}
+        hint={hour.sea.swell !== null ? `Ondulação ${hour.sea.swell} m` : "Água do mar"}
+      />,
+    );
+  if (fireRisk)
+    cards.push(
+      <Card
+        key="fire"
+        title="Risco de incêndio"
+        value={fireRisk.label}
+        hint={`Nível ${fireRisk.level}/5`}
+      />,
+    );
+
+  const cols = GRID_COLS[cards.length] ?? "lg:grid-cols-6";
+
   return (
     <section aria-label="Condições atuais" className="px-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {wind && (
-          <Card
-            title="Vento"
-            value={wind.min === wind.max ? `${wind.max} km/h` : `${wind.min}–${wind.max} km/h`}
-            hint={wind.dir ?? undefined}
-          />
-        )}
-        {uvValue !== null && (
-          <Card
-            title="Índice UV"
-            value={`${Math.round(uvValue)}`}
-            hint={uvClass(uvValue)}
-          >
-            <UvMeter uv={uvValue} />
-          </Card>
-        )}
-        {hour.humidity !== null && (
-          <Card
-            title="Humidade"
-            value={`${Math.round(hour.humidity)}%`}
-            hint={dew !== null ? `Orvalho ${dew}°` : undefined}
-          />
-        )}
-        {pressure != null && (
-          <Card title="Pressão" value={`${pressure} hPa`} />
-        )}
-        {hour.sea && hour.sea.waterTemp !== null && (
-          <Card
-            title="Mar"
-            value={`${Math.round(hour.sea.waterTemp)}°`}
-            hint={
-              hour.sea.swell !== null
-                ? `Ondulação ${hour.sea.swell} m`
-                : "Água do mar"
-            }
-          />
-        )}
-        {fireRisk && (
-          <Card
-            title="Risco de incêndio"
-            value={fireRisk.label}
-            hint={`Nível ${fireRisk.level}/5`}
-          />
-        )}
+      <div className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${cols}`}>
+        {cards}
         {sun && <SunCard sun={sun} moon={moon} />}
       </div>
     </section>

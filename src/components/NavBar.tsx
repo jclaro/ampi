@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -12,10 +11,24 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import { LocationSearch, type SearchOption } from "./LocationSearch";
 
 const SECTIONS = ["/mapa", "/avisos", "/sismos", "/locais"];
 const isSection = (p: string, prefix: string) => p.startsWith(prefix);
+
+// Classes partilhadas entre os separadores da nav e o ThemeToggle, para que
+// o botão de tema fique visualmente idêntico aos itens inativos.
+export const navItemBase =
+  "flex min-h-[44px] flex-col items-center justify-center gap-1 rounded-xl px-3 py-1.5 " +
+  "text-[11px] font-medium leading-none transition-colors duration-150 " +
+  "outline-none focus-visible:ring-2 focus-visible:ring-sky-500/50 focus-visible:ring-offset-0 " +
+  "active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100";
+
+export const navItemActive =
+  "bg-sky-600 text-white shadow-sm shadow-sky-600/30 hover:bg-sky-600";
+
+export const navItemInactive =
+  "text-slate-600 hover:bg-slate-100 hover:text-slate-900 " +
+  "dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white";
 
 const ITEMS: {
   href: string;
@@ -35,61 +48,46 @@ const ITEMS: {
   { href: "/sismos", label: "Sismos", Icon: Activity, match: (p) => isSection(p, "/sismos") },
 ];
 
-export function NavBar() {
+/**
+ * Lista de ligações de navegação, partilhada pela tab-bar mobile (NavBar) e
+ * pelo rodapé desktop (SiteFooter). O estado ativo segue a rota atual.
+ */
+export function NavLinks() {
   const pathname = usePathname();
-  // Opções para a pesquisa global (só usada em desktop). Carregadas uma vez
-  // de uma API cacheável; em mobile a pesquisa vive na própria página.
-  const [options, setOptions] = useState<SearchOption[]>([]);
+  return (
+    <>
+      {ITEMS.map((item) => {
+        const active = item.match(pathname);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-current={active ? "page" : undefined}
+            className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}
+          >
+            <item.Icon size={18} aria-hidden strokeWidth={2} />
+            {item.label}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
 
-  useEffect(() => {
-    let active = true;
-    fetch("/api/locations")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: SearchOption[]) => active && setOptions(data))
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, []);
-
+/**
+ * Barra de navegação mobile: tab-bar flutuante colada ao fundo do ecrã.
+ * Em desktop desaparece (`sm:hidden`) — aí a navegação vive no SiteFooter e a
+ * pesquisa/toggle vivem no TopBar.
+ */
+export function NavBar() {
   return (
     <nav
       aria-label="Navegação principal"
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 sm:static sm:border-b sm:border-t-0"
+      className="fixed inset-x-0 bottom-0 z-20 px-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] sm:hidden"
     >
-      <div className="mx-auto flex max-w-5xl items-center sm:gap-4 sm:px-4">
-        {/* Pesquisa de localidade: só em desktop e PRIMEIRA na barra.
-            Em mobile continua a aparecer no topo do conteúdo da página. */}
-        {options.length > 0 && (
-          <div className="hidden sm:block sm:w-64">
-            <LocationSearch options={options} className="" />
-          </div>
-        )}
-
-        <ul className="flex flex-1 justify-around sm:ml-auto sm:flex-initial sm:justify-end sm:gap-6">
-          {ITEMS.map((item) => {
-            const active = item.match(pathname);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex flex-col items-center gap-0.5 px-4 py-2 text-xs ${
-                    active
-                      ? "text-sky-600 dark:text-sky-400"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
-                  }`}
-                >
-                  <item.Icon size={20} aria-hidden strokeWidth={2} />
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-          <li>
-            <ThemeToggle />
-          </li>
-        </ul>
+      <div className="mx-auto flex max-w-5xl items-center justify-around gap-1 rounded-2xl border border-slate-200/70 bg-white/80 p-1 shadow-lg shadow-slate-900/5 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/80 dark:shadow-black/20">
+        <NavLinks />
+        <ThemeToggle />
       </div>
     </nav>
   );
