@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /**
  * Atribuição à fonte dos dados (IPMA), com o logo-símbolo oficial e hiperligação,
  * conforme as condições de utilização da API do IPMA. Subtil, no rodapé.
@@ -24,6 +26,14 @@ export function Attribution({ extra }: { extra?: string }) {
       <span>
         Visualização alternativa não-oficial{extra ? ` · ${extra}` : ""}
       </span>
+      <nav className="flex gap-3" aria-label="Páginas legais">
+        <Link href="/privacidade" className="hover:text-slate-600 dark:hover:text-slate-300">
+          Privacidade
+        </Link>
+        <Link href="/termos" className="hover:text-slate-600 dark:hover:text-slate-300">
+          Termos
+        </Link>
+      </nav>
     </footer>
   );
 }
