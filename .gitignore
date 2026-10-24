@@ -29,3 +29,10 @@ npm-debug.log*
 shot*.png
 shot*.mjs
 *.har
+
+# ficheiros temporários locais (mantém a pasta, ignora o conteúdo)
+tmp/*
+!tmp/.gitkeep
+
+# cache incremental do TypeScript
+tsconfig.tsbuildinfo
