@@ -7,12 +7,12 @@ describe("periodTitle", () => {
     expect(periodTitle(11)).toBe("Esta manhã");
   });
 
-  it("à tarde → 'Esta tarde'", () => {
+  it("à tarde (até às 17h) → 'Esta tarde'", () => {
     expect(periodTitle(12)).toBe("Esta tarde");
     expect(periodTitle(17)).toBe("Esta tarde");
   });
 
-  it("à noite → 'Esta noite e amanhã'", () => {
+  it("à noite (a partir das 18h) → 'Esta noite e amanhã'", () => {
     expect(periodTitle(18)).toBe("Esta noite e amanhã");
     expect(periodTitle(23)).toBe("Esta noite e amanhã");
     expect(periodTitle(3)).toBe("Esta noite e amanhã");
