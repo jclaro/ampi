@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { Daily } from "@/lib/ipma/types";
 import { WeatherIcon } from "./WeatherIcon";
 import { temp, weekday, precip } from "@/lib/format";
@@ -9,13 +12,15 @@ import { conditionCircleClass } from "@/lib/ipma/condition-color";
 const PRECIP_THRESHOLD = 10;
 
 /**
- * Largura (%) da barra de chuva no contentor. A barra tem de chegar sempre
- * ao círculo do ícone (sobreposto à direita), por isso nunca é mais estreita
- * que esse ponto; acima disso cresce com a probabilidade até 100%.
+ * Largura (%) da barra de chuva no contentor. O círculo do ícone fica encostado
+ * à direita e ocupa sempre a mesma coluna; a barra parte desse ponto fixo e a
+ * probabilidade só começa a "contar" a partir daí, crescendo para a esquerda no
+ * espaço restante (0% = só o círculo; 100% = barra cheia).
  */
 const CIRCLE_REACH_PCT = 72; // a barra (contentor w-36) tem de alcançar o círculo (w-9) à direita
 function precipBarPct(prob: number): number {
-  return Math.max(CIRCLE_REACH_PCT, Math.round(prob));
+  const remaining = 100 - CIRCLE_REACH_PCT;
+  return CIRCLE_REACH_PCT + (Math.min(100, Math.max(0, prob)) / 100) * remaining;
 }
 
 function dayLabel(iso: string): { wd: string; dm: string } {
@@ -23,14 +28,22 @@ function dayLabel(iso: string): { wd: string; dm: string } {
   return { wd: weekday(iso), dm: `${d.getDate()}` };
 }
 
+/** Dias visíveis antes de carregar em "Ver mais". */
+const COLLAPSED_COUNT = 5;
+
 export function DailyList({ days }: { days: Daily[] }) {
+  const [expanded, setExpanded] = useState(false);
+  // Escala das barras calculada sobre TODOS os dias, para que o mínimo/máximo
+  // não mude ao expandir e as barras fiquem alinhadas entre os dois grupos.
   const bars = temperatureBars(days);
+  const visible = expanded ? days : days.slice(0, COLLAPSED_COUNT);
+  const showMoreButton = !expanded && days.length > COLLAPSED_COUNT;
 
   return (
     <section aria-label="Previsão diária" className="px-4">
       <h2 className="mb-3 text-2xl font-bold tracking-tight">Esta semana</h2>
       <ul className="flex flex-col gap-2">
-        {days.map((d, i) => {
+        {visible.map((d, i) => {
           const bar = bars[i];
           const showPrecip =
             d.precipitationProb !== null &&
@@ -110,6 +123,15 @@ export function DailyList({ days }: { days: Daily[] }) {
           );
         })}
       </ul>
+      {showMoreButton && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="mt-3 w-full rounded-lg py-2 text-sm font-semibold text-sky-600 transition-colors hover:bg-slate-100 dark:text-sky-400 dark:hover:bg-slate-800"
+        >
+          Ver mais
+        </button>
+      )}
     </section>
   );
 }

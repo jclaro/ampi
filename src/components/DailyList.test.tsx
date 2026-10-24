@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { DailyList } from "./DailyList";
 import type { Daily } from "@/lib/ipma/types";
 
@@ -46,6 +46,15 @@ describe("DailyList", () => {
     expect(w90).toBeLessThanOrEqual(100);
   });
 
+  it("probabilidades baixas distintas dão barras distintas (a % conta só após o círculo)", () => {
+    // Regressão: antes todas as % abaixo da área do círculo ficavam iguais.
+    render(<DailyList days={[day(10, 20, 12), day(10, 20, 22)]} />);
+    const fills = screen.getAllByTestId("precip-fill");
+    const w12 = parseFloat((fills[0] as HTMLElement).style.width);
+    const w22 = parseFloat((fills[1] as HTMLElement).style.width);
+    expect(w22).toBeGreaterThan(w12); // 22% > 12%, mesmo abaixo da zona do círculo
+  });
+
   it("o círculo do ícone fica à direita da barra de chuva", () => {
     render(<DailyList days={[day(10, 20, 80)]} />);
     // a barra e o círculo coexistem no mesmo bloco de precipitação
@@ -75,5 +84,23 @@ describe("DailyList", () => {
     expect(circle.className).toMatch(/bg-sky-300/);
     // o ícone (img) está lá dentro
     expect(circle.querySelector("img")).not.toBeNull();
+  });
+
+  it("mostra só 5 dias e revela os restantes em 'Ver mais' (sem recolher)", () => {
+    const days = Array.from({ length: 10 }, () => day(10, 20, 0));
+    render(<DailyList days={days} />);
+
+    expect(screen.getAllByTestId("daily-row")).toHaveLength(5);
+
+    fireEvent.click(screen.getByRole("button", { name: "Ver mais" }));
+    expect(screen.getAllByTestId("daily-row")).toHaveLength(10);
+    // depois de expandir o botão desaparece — não há "Ver menos"
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("não mostra 'Ver mais' quando há 5 dias ou menos", () => {
+    const days = Array.from({ length: 5 }, () => day(10, 20, 0));
+    render(<DailyList days={days} />);
+    expect(screen.queryByRole("button", { name: "Ver mais" })).toBeNull();
   });
 });

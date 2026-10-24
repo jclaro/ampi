@@ -77,8 +77,8 @@ export async function WeatherPage({ slug }: { slug: string }) {
   const sun = sunTimes(new Date(), location.lat, location.lon);
   const moon = moonPhase(new Date());
 
-  const fiveDays = daily.slice(0, 5);
-  const accent = accentFor(fiveDays);
+  const days = daily.slice(0, 10);
+  const accent = accentFor(days);
 
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 pb-12 sm:pt-6 lg:max-w-5xl">
@@ -111,7 +111,7 @@ export async function WeatherPage({ slug }: { slug: string }) {
           uv={today?.uv ?? null}
         />
       )}
-      <DailyList days={fiveDays} />
+      <DailyList days={days} />
       <Attribution />
     </main>
   );

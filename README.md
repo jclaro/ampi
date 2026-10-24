@@ -9,7 +9,7 @@ pública. Inspirada em apps como o Hello Weather.
 
 ## Funcionalidades
 
-- **Previsão** horária e a 5 dias por localidade (430 concelhos), com tira horária
+- **Previsão** horária e a 10 dias por localidade (430 concelhos), com tira horária
   de perfil térmico e barras de temperatura/precipitação legíveis "ao relance".
 - **Avisos meteorológicos** (amarelo/laranja/vermelho), com secção "Na tua zona".
 - **Mapa** de observações em tempo real — temperatura por estação, com detalhe de
