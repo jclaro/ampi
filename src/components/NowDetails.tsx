@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { Hourly } from "@/lib/ipma/types";
+import type { WindRange } from "@/lib/ipma/wind-range";
+import type { SunTimes, MoonPhase } from "@/lib/sun";
 import { MetricCards } from "./MetricCards";
 
 /**
@@ -11,10 +13,18 @@ import { MetricCards } from "./MetricCards";
  */
 export function NowDetails({
   hour,
+  wind,
+  pressure,
+  sun,
+  moon,
   fireRisk,
   uv,
 }: {
   hour: Hourly;
+  wind?: WindRange | null;
+  pressure?: number | null;
+  sun?: SunTimes | null;
+  moon?: MoonPhase | null;
   fireRisk?: { level: number; label: string } | null;
   uv?: number | null;
 }) {
@@ -42,7 +52,15 @@ export function NowDetails({
         </span>
       </summary>
       <div className="mt-3">
-        <MetricCards hour={hour} fireRisk={fireRisk} uv={uv} />
+        <MetricCards
+          hour={hour}
+          wind={wind}
+          pressure={pressure}
+          sun={sun}
+          moon={moon}
+          fireRisk={fireRisk}
+          uv={uv}
+        />
       </div>
     </details>
   );

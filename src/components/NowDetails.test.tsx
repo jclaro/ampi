@@ -28,7 +28,7 @@ describe("NowDetails", () => {
   });
 
   it("renderiza os cartões de métricas (vento, humidade, UV)", () => {
-    render(<NowDetails hour={hour} />);
+    render(<NowDetails hour={hour} wind={{ min: 3, max: 7, dir: "NW" }} />);
     expect(screen.getByText(/Vento/)).toBeInTheDocument();
     expect(screen.getByText(/Humidade/)).toBeInTheDocument();
     expect(screen.getByText(/Índice UV/)).toBeInTheDocument();
