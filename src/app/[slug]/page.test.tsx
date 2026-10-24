@@ -41,7 +41,7 @@ vi.mock("@/lib/ipma/client", () => ({
   }),
 }));
 
-import LocationPage from "./page";
+import { WeatherPage } from "@/components/WeatherPage";
 
 describe("Página /[slug]", () => {
   beforeEach(() => {
@@ -57,7 +57,7 @@ describe("Página /[slug]", () => {
   });
 
   async function renderPage(slug: string) {
-    const ui = await LocationPage({ params: Promise.resolve({ slug }) });
+    const ui = await WeatherPage({ slug });
     render(ui);
   }
 
