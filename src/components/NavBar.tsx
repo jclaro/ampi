@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -10,6 +11,8 @@ import {
   Activity,
   type LucideIcon,
 } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
+import { LocationSearch, type SearchOption } from "./LocationSearch";
 
 const SECTIONS = ["/mapa", "/avisos", "/sismos", "/locais"];
 const isSection = (p: string, prefix: string) => p.startsWith(prefix);
@@ -34,33 +37,60 @@ const ITEMS: {
 
 export function NavBar() {
   const pathname = usePathname();
+  // Opções para a pesquisa global (só usada em desktop). Carregadas uma vez
+  // de uma API cacheável; em mobile a pesquisa vive na própria página.
+  const [options, setOptions] = useState<SearchOption[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/locations")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: SearchOption[]) => active && setOptions(data))
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <nav
       aria-label="Navegação principal"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 sm:static sm:border-b sm:border-t-0"
     >
-      <ul className="mx-auto flex max-w-xl justify-around sm:justify-center sm:gap-8">
-        {ITEMS.map((item) => {
-          const active = item.match(pathname);
-          return (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 px-4 py-2 text-xs ${
-                  active
-                    ? "text-sky-600 dark:text-sky-400"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
-                }`}
-              >
-                <item.Icon size={20} aria-hidden strokeWidth={2} />
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="mx-auto flex max-w-5xl items-center sm:gap-4 sm:px-4">
+        {/* Pesquisa de localidade: só em desktop e PRIMEIRA na barra.
+            Em mobile continua a aparecer no topo do conteúdo da página. */}
+        {options.length > 0 && (
+          <div className="hidden sm:block sm:w-64">
+            <LocationSearch options={options} className="" />
+          </div>
+        )}
+
+        <ul className="flex flex-1 justify-around sm:ml-auto sm:flex-initial sm:justify-end sm:gap-6">
+          {ITEMS.map((item) => {
+            const active = item.match(pathname);
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex flex-col items-center gap-0.5 px-4 py-2 text-xs ${
+                    active
+                      ? "text-sky-600 dark:text-sky-400"
+                      : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                  }`}
+                >
+                  <item.Icon size={20} aria-hidden strokeWidth={2} />
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
+          <li>
+            <ThemeToggle />
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

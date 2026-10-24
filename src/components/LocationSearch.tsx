@@ -14,7 +14,14 @@ export interface SearchOption {
   lon: number;
 }
 
-export function LocationSearch({ options }: { options: SearchOption[] }) {
+export function LocationSearch({
+  options,
+  className = "mx-4",
+}: {
+  options: SearchOption[];
+  /** Posicionamento do contentor (default: margem lateral da página). */
+  className?: string;
+}) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
@@ -52,7 +59,7 @@ export function LocationSearch({ options }: { options: SearchOption[] }) {
   }
 
   return (
-    <div className="relative mx-4">
+    <div className={`relative ${className}`}>
       <Search
         size={16}
         aria-hidden
