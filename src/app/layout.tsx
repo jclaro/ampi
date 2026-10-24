@@ -21,7 +21,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt" className={inter.variable}>
+    <html lang="pt" className={inter.variable} suppressHydrationWarning>
+      <head>
+        {/* Anti-FOWT: aplica o tema ANTES da pintura, a partir da preferência
+            guardada ou de prefers-color-scheme. "theme" pode ser "light",
+            "dark" ou ausente (= seguir o sistema). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");var d=t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-dvh bg-white font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
         <NavBar />
         <div className="pb-16 sm:pb-0">{children}</div>
