@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { weatherTypeLabel, isRainy } from "./weather-types";
+import { weatherTypeLabel, isRainy, isGreyCondition } from "./weather-types";
 
 describe("isRainy", () => {
   it("condições de chuva/aguaceiros/trovoada → true", () => {
@@ -10,6 +10,20 @@ describe("isRainy", () => {
   it("céu limpo/nublado → false", () => {
     expect(isRainy(1)).toBe(false);
     expect(isRainy(4)).toBe(false);
+  });
+});
+
+describe("isGreyCondition", () => {
+  it("mau tempo (chuva, nevoeiro, neve, granizo) → true", () => {
+    expect(isGreyCondition(6)).toBe(true); // chuva
+    expect(isGreyCondition(17)).toBe(true); // nevoeiro
+    expect(isGreyCondition(18)).toBe(true); // neve
+    expect(isGreyCondition(21)).toBe(true); // granizo
+  });
+  it("céu limpo e nublado → false (só mau tempo é cinza)", () => {
+    expect(isGreyCondition(1)).toBe(false); // limpo
+    expect(isGreyCondition(4)).toBe(false); // muito nublado
+    expect(isGreyCondition(27)).toBe(false); // nublado
   });
 });
 
