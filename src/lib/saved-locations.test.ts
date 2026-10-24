@@ -54,10 +54,16 @@ describe("saved-locations", () => {
     expect(isSaved("porto")).toBe(false);
   });
 
-  it("migra o valor único antigo (ampi:last-location) para a lista", () => {
-    localStorage.setItem("ampi:last-location", "coimbra");
-    const list = listSaved();
-    expect(list.map((l) => l.slug)).toContain("coimbra");
-    expect(defaultSlug()).toBe("coimbra");
+  it("NÃO guarda o último local visto (ampi:last-location) automaticamente", () => {
+    // Ver uma localidade (last-location) não a deve pôr em "Os meus locais".
+    localStorage.setItem("ampi:last-location", "lisboa");
+    expect(listSaved()).toEqual([]);
+    expect(isSaved("lisboa")).toBe(false);
+  });
+
+  it("só contém locais explicitamente guardados pelo utilizador", () => {
+    localStorage.setItem("ampi:last-location", "lisboa"); // visto, não guardado
+    addSaved(porto); // guardado pelo utilizador
+    expect(listSaved().map((l) => l.slug)).toEqual(["porto"]);
   });
 });
