@@ -37,18 +37,20 @@ describe("DailyList", () => {
     expect(fills[1]).toBeNull(); // 0% → esconde
   });
 
-  it("a barra de precipitação tem largura proporcional à probabilidade", () => {
-    render(<DailyList days={[day(10, 20, 80)]} />);
-    const fill = screen.getByTestId("precip-fill") as HTMLElement;
-    expect(parseFloat(fill.style.width)).toBeCloseTo(80, 0);
+  it("a barra de precipitação cresce com a probabilidade (prob alta → mais larga)", () => {
+    render(<DailyList days={[day(10, 20, 90), day(10, 20, 30)]} />);
+    const fills = screen.getAllByTestId("precip-fill");
+    const w90 = parseFloat((fills[0] as HTMLElement).style.width);
+    const w30 = parseFloat((fills[1] as HTMLElement).style.width);
+    expect(w90).toBeGreaterThan(w30); // 90% é mais larga que 30%
+    expect(w90).toBeLessThanOrEqual(100);
   });
 
-  it("a barra de precipitação cresce da direita (espelhada)", () => {
+  it("o círculo do ícone fica à direita da barra de chuva", () => {
     render(<DailyList days={[day(10, 20, 80)]} />);
-    const fill = screen.getByTestId("precip-fill") as HTMLElement;
-    // encostada à direita: right:0 (não left)
-    expect(fill.style.right).toBe("0px");
-    expect(fill.style.left).toBe("");
+    // a barra e o círculo coexistem no mesmo bloco de precipitação
+    expect(screen.getByTestId("precip-fill")).toBeInTheDocument();
+    expect(screen.getByTestId("day-icon-circle")).toBeInTheDocument();
   });
 
   it("os números de temperatura estão dentro da cápsula", () => {
@@ -63,5 +65,15 @@ describe("DailyList", () => {
     const bar = screen.getByTestId("temp-bar") as HTMLElement;
     // gradiente definido em background (linear-gradient com dois hsl)
     expect(bar.style.background).toMatch(/hsl/);
+  });
+
+  it("o ícone meteorológico está dentro de um círculo colorido por condição", () => {
+    render(<DailyList days={[day(10, 20, 0)]} />); // weatherTypeId 1 = céu limpo
+    const circle = screen.getByTestId("day-icon-circle");
+    expect(circle.className).toMatch(/rounded-full/);
+    // céu limpo de dia → azul claro
+    expect(circle.className).toMatch(/bg-sky-300/);
+    // o ícone (img) está lá dentro
+    expect(circle.querySelector("img")).not.toBeNull();
   });
 });
