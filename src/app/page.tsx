@@ -1,4 +1,3 @@
-import { getForecastBySlug } from "@/lib/ipma/forecast";
 import { WeatherPage } from "@/components/WeatherPage";
 import { PreferredLocationRedirect } from "@/components/PreferredLocationRedirect";
 
@@ -7,17 +6,14 @@ export const revalidate = 1800;
 // Localidade mostrada por omissão em /, quando não há preferência guardada.
 const FALLBACK_SLUG = "lisboa";
 
-export async function generateMetadata() {
-  const data = await getForecastBySlug(FALLBACK_SLUG);
-  if (!data) return { title: "AMPI — Meteorologia de Portugal" };
-  const { location, daily } = data;
-  const today = daily[0];
-  const range = today ? ` ${Math.round(today.tMin ?? 0)}°–${Math.round(today.tMax ?? 0)}°` : "";
-  return {
-    title: `${location.name} — Meteorologia | AMPI`,
-    description: `Previsão do tempo para ${location.name}:${range}. Dados do IPMA numa interface mobile-first.`,
-  };
-}
+// A raiz (ampi.pt) é a landing do produto, não a página da localidade por
+// omissão — por isso o SEO é de marca/produto, não "Lisboa". O título por
+// localidade vive em /{slug} (ver app/[slug]/page.tsx).
+export const metadata = {
+  title: "AMPI — Previsão do Tempo em Portugal | Dados do IPMA",
+  description:
+    "Previsão do tempo para todas as localidades de Portugal: temperatura, vento, chuva e avisos meteorológicos. Dados oficiais do IPMA numa interface rápida e mobile-first.",
+};
 
 /**
  * Raiz do site. Renderiza Lisboa no servidor (SSR/ISR) — o URL fica em / sem
