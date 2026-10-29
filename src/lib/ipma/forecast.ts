@@ -4,7 +4,14 @@ import { parseAggregate } from "./aggregate";
 import type { Daily, Hourly, Location } from "./types";
 
 const REVALIDATE_LOCATIONS = 86400; // 24h — quase estático
-const REVALIDATE_FORECAST = 1800; // 30 min — cadência do IPMA
+// TTL alto: a frescura da previsão vem da revalidação on-demand por tag
+// (ver /api/revalidate + scheduled function), não da expiração deste TTL.
+// O IPMA só republica ~2x/dia, por isso 6h é um fallback seguro caso o cron
+// falhe, sem martelar a API.
+const REVALIDATE_FORECAST = 21600; // 6h — só fallback; invalidação é on-demand
+
+/** Tag partilhada por TODAS as previsões — permite invalidar tudo de uma vez. */
+export const FORECAST_TAG = "forecast";
 
 /** Lista leve de localidades para pesquisa/geolocalização no cliente. */
 export interface LocationOption {
@@ -48,7 +55,10 @@ export async function getForecastBySlug(
 
   const raw = await ipmaFetch<unknown[]>(
     `/public-data/forecast/aggregate/${location.globalIdLocal}.json`,
-    { revalidate: REVALIDATE_FORECAST, tag: `forecast-${location.globalIdLocal}` },
+    {
+      revalidate: REVALIDATE_FORECAST,
+      tag: [`forecast-${location.globalIdLocal}`, FORECAST_TAG],
+    },
   );
   const { daily, hourly } = parseAggregate(raw);
   return { location, daily, hourly };

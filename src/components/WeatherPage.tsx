@@ -6,19 +6,13 @@ import {
 import { getWarnings, activeWarningsForArea } from "@/lib/ipma/warnings";
 import { getFireRisk, dicoFor, fireRiskLabel } from "@/lib/ipma/fire";
 import { accentFor } from "@/lib/ipma/accent";
-import { upcomingHours } from "@/lib/ipma/select";
-import { windRange } from "@/lib/ipma/wind-range";
 import { nearestPressure } from "@/lib/ipma/pressure";
 import { getStations } from "@/lib/ipma/stations";
 import { getObservations } from "@/lib/ipma/observations";
 import { sunTimes, moonPhase } from "@/lib/sun";
 import { nowInPortugal } from "@/lib/time";
-import { periodTitle } from "@/lib/period";
-import { Hero } from "@/components/Hero";
-import { HourlyStrip } from "@/components/HourlyStrip";
 import { DailyList } from "@/components/DailyList";
-import { WarningBanner } from "@/components/WarningBanner";
-import { NowDetails } from "@/components/NowDetails";
+import { WeatherNow } from "@/components/WeatherNow";
 import { LocationSearch } from "@/components/LocationSearch";
 import { RememberLocation } from "@/components/RememberLocation";
 import { SaveButton } from "@/components/SaveButton";
@@ -43,10 +37,6 @@ export async function WeatherPage({ slug }: { slug: string }) {
 
   const { location, daily, hourly } = data;
   const today = daily[0];
-  const ptNow = nowInPortugal();
-  const upcoming = upcomingHours(hourly, ptNow, 24);
-  const hourlyTitle = periodTitle(ptNow.getHours());
-  const now = upcoming[0] ?? hourly[0];
   const warnings = activeWarningsForArea(allWarnings, location.warningAreaId);
 
   const fireLevel = fireMap.get(
@@ -57,13 +47,8 @@ export async function WeatherPage({ slug }: { slug: string }) {
       ? { level: fireLevel, label: fireRiskLabel(fireLevel) }
       : null;
 
-  // Intervalo de vento ao longo do DIA em que estamos (não as próximas 24h):
-  // horas do mesmo dia-calendário que "agora" em Portugal.
-  const todayKey = ptNow.toDateString();
-  const todayHours = hourly.filter(
-    (h) => new Date(h.date).toDateString() === todayKey,
-  );
-  const wind = windRange(todayHours.length > 0 ? todayHours : upcoming);
+  // "agora" do servidor: só a 1ª pintura (o WeatherNow recalcula no cliente).
+  const initialPtNowMs = nowInPortugal().getTime();
 
   // Pressão da estação mais próxima com leitura válida (null → não se mostra).
   const pressure = nearestPressure(
@@ -91,26 +76,19 @@ export async function WeatherPage({ slug }: { slug: string }) {
       {/* Coluna única (larga em desktop), mesma ordem em mobile e desktop:
           Hero → Horárias → Detalhes → Semana. Os detalhes (condições de HOJE)
           ficam à vista em desktop e recolhidos em mobile (ver NowDetails). */}
-      <Hero
+      <WeatherNow
         location={location}
-        now={now}
-        tMin={today?.tMin ?? null}
-        tMax={today?.tMax ?? null}
+        hourly={hourly}
+        today={today}
+        accent={accent}
+        warnings={warnings}
+        pressure={pressure}
+        sun={sun}
+        moon={moon}
+        fireRisk={fireRisk}
+        initialPtNowMs={initialPtNowMs}
         action={<SaveButton slug={location.slug} name={location.name} />}
       />
-      <WarningBanner warnings={warnings} />
-      <HourlyStrip hours={upcoming} accent={accent} title={hourlyTitle} />
-      {now && (
-        <NowDetails
-          hour={now}
-          wind={wind}
-          pressure={pressure}
-          sun={sun}
-          moon={moon}
-          fireRisk={fireRisk}
-          uv={today?.uv ?? null}
-        />
-      )}
       <DailyList days={days} />
       <Attribution />
     </main>

@@ -21,6 +21,18 @@
   package = "@netlify/plugin-nextjs"
 
 # =============================================================================
+# Revalidação on-demand das previsões
+# =============================================================================
+# A Scheduled Function `netlify/functions/revalidate-forecast.mts` corre a cada
+# 30 min e chama /api/revalidate, que invalida a tag "forecast". Assim a
+# previsão por localidade tem TTL alto (6h, poucas chamadas ao IPMA) mas é
+# atualizada pouco depois de o IPMA republicar (~2x/dia), sem os refreshes
+# múltiplos que mostravam dados de ontem.
+#
+# REQUER a env var `REVALIDATE_SECRET` definida no site (Site settings → Env),
+# partilhada entre a função e a rota. A env `URL` é injetada pela Netlify.
+
+# =============================================================================
 # Deploy contexts
 # =============================================================================
 

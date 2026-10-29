@@ -70,6 +70,24 @@ describe("ipmaFetch", () => {
     expect(second.v).toBe(1);
   });
 
+  it("NÃO serve stale com mais de 6h — propaga o erro", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({ v: 1 })));
+    await ipmaFetch("/public-data/x.json", { revalidate: 1, tag: "x" });
+
+    // Avança 6h + 1min: o valor em cache deixa de ser aceitável.
+    vi.advanceTimersByTime(6 * 60 * 60 * 1000 + 60_000);
+
+    fetchMock.mockRejectedValueOnce(new Error("IPMA down"));
+    await expect(
+      ipmaFetch("/public-data/x.json", { revalidate: 1, tag: "x" }),
+    ).rejects.toThrow();
+
+    vi.useRealTimers();
+  });
+
   it("lança se o fetch falhar e não houver valor stale", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("IPMA down"));
     await expect(
