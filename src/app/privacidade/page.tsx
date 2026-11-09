@@ -5,11 +5,11 @@ import { LegalFooter } from "@/components/LegalFooter";
 export const metadata: Metadata = {
   title: "Política de Privacidade — AMPI",
   description:
-    "Como o AMPI trata (ou não trata) os teus dados: sem tracking, sem publicidade, sem partilha.",
+    "Como o AMPI trata (ou não trata) os teus dados: sem cookies de rastreio, sem publicidade, sem venda de dados.",
 };
 
 // Data da última revisão deste texto. Atualizar quando o conteúdo mudar.
-const UPDATED = "24 de outubro de 2026";
+const UPDATED = "9 de novembro de 2026";
 
 export default function PrivacidadePage() {
   return (
@@ -34,9 +34,15 @@ export default function PrivacidadePage() {
           </h2>
           <ul className="list-disc space-y-1 pl-5">
             <li>Não usamos cookies de rastreio nem publicidade.</li>
-            <li>Não temos analytics de terceiros (Google Analytics, Meta, etc.).</li>
+            <li>
+              Não usamos Google Analytics nem Meta. Contamos visitas com a Cloudflare
+              Web Analytics, sem cookies.
+            </li>
             <li>Não criamos conta nem pedimos dados pessoais.</li>
-            <li>Não vendemos nem partilhamos dados com terceiros.</li>
+            <li>
+              Não vendemos dados. Só os partilhamos com os prestadores de serviços
+              indicados nesta página.
+            </li>
           </ul>
         </section>
 
@@ -80,6 +86,17 @@ export default function PrivacidadePage() {
           </p>
 
           <h3 className="font-medium text-slate-900 dark:text-slate-100">
+            Estatísticas de visitas
+          </h3>
+          <p>
+            Usamos a Cloudflare Web Analytics para contar visitas e páginas vistas.
+            Não usa cookies nem guarda nada no teu navegador. A Cloudflare recebe a
+            página visitada, o site de onde vieste, dados técnicos do navegador e de
+            desempenho e o endereço IP, a partir do qual determina o país. Segundo a
+            Cloudflare, o IP não é usado para te identificar nem seguir.
+          </p>
+
+          <h3 className="font-medium text-slate-900 dark:text-slate-100">
             Dados do IPMA e mapas
           </h3>
           <p>
@@ -95,8 +112,9 @@ export default function PrivacidadePage() {
             Base legal e os teus direitos (RGPD)
           </h2>
           <p>
-            O tratamento mínimo que fazemos (registos do servidor) assenta no
-            interesse legítimo de operar o serviço de forma segura. A localização
+            O tratamento mínimo que fazemos (registos do servidor e estatísticas de
+            visitas) assenta no interesse legítimo de operar o serviço de forma
+            segura e de perceber como é usado. A localização
             depende do teu consentimento, dado através do navegador.
           </p>
           <p>

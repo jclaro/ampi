@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { NavBar } from "@/components/NavBar";
 import { TopBar } from "@/components/TopBar";
@@ -10,6 +11,9 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
+// Cloudflare Web Analytics: sem cookies. O token é público (fica visível no HTML).
+const CF_ANALYTICS_TOKEN = "bf53af3c803b448fa2a90767cafe7958";
 
 export const metadata: Metadata = {
   title: "AMPI — Meteorologia de Portugal",
@@ -39,6 +43,15 @@ export default function RootLayout({
         <NavBar />
         <div className="pb-24 sm:pb-0">{children}</div>
         <SiteFooter />
+        {process.env.NODE_ENV === "production" && (
+          <Script
+            type="module"
+            crossOrigin="anonymous"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: CF_ANALYTICS_TOKEN })}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );
