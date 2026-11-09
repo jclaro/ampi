@@ -25,7 +25,9 @@ export function Hero({
         <h1 className="text-center text-3xl font-bold tracking-tight">
           {location.name}
         </h1>
-        {action}
+        {/* O fragmento evita o aviso de "key" em dev: `action` vem de um Server
+            Component e o React não o reconhece como filho estático do <h1>. */}
+        <>{action}</>
       </div>
 
       {now && (
