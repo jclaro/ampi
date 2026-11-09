@@ -1,6 +1,27 @@
 import { describe, it, expect } from "vitest";
-import { temperatureBars } from "./range";
+import { temperatureBarPosition, temperatureBars } from "./range";
 import type { Daily } from "./types";
+
+describe("temperatureBarPosition", () => {
+  it("limita a posição para a largura mínima não sair da calha", () => {
+    // Regressão: no topo da escala, a cápsula saía da calha e alargava a página.
+    expect(temperatureBarPosition({ leftPct: 90, widthPct: 10 }).left).toBe(
+      "max(0px, min(90%, 100% - 5.5rem))",
+    );
+  });
+
+  it("a largura mínima nunca passa a largura da calha", () => {
+    expect(temperatureBarPosition({ leftPct: 0, widthPct: 10 }).minWidth).toBe(
+      "min(5.5rem, 100%)",
+    );
+  });
+
+  it("mantém a largura da escala", () => {
+    expect(temperatureBarPosition({ leftPct: 20, widthPct: 40 }).width).toBe(
+      "40%",
+    );
+  });
+});
 
 function day(tMin: number, tMax: number): Daily {
   return {

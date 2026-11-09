@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Daily } from "@/lib/ipma/types";
 import { WeatherIcon } from "./WeatherIcon";
 import { temp, weekday, precip } from "@/lib/format";
-import { temperatureBars } from "@/lib/ipma/range";
+import { temperatureBarPosition, temperatureBars } from "@/lib/ipma/range";
 import { tempColor } from "@/lib/ipma/temp-color";
 import { conditionCircleClass } from "@/lib/ipma/condition-color";
 
@@ -105,9 +105,7 @@ export function DailyList({ days }: { days: Daily[] }) {
                   data-testid="temp-bar"
                   className="absolute flex h-full items-center justify-between gap-2 rounded-lg px-3 text-sm font-bold text-white"
                   style={{
-                    left: `${bar.leftPct}%`,
-                    width: `${bar.widthPct}%`,
-                    minWidth: "5.5rem",
+                    ...temperatureBarPosition(bar),
                     background: gradient,
                   }}
                 >
