@@ -74,7 +74,10 @@ export function LocationSearch({
         onBlur={() => setTimeout(() => setFocused(false), 150)}
         placeholder="Procurar localidade"
         aria-label="Procurar localidade"
-        className="w-full rounded-full border border-slate-300 bg-slate-100 py-2.5 pl-10 pr-4 text-sm font-medium text-slate-900 placeholder:text-slate-500 shadow-sm outline-none transition-colors hover:border-slate-400 focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:hover:border-slate-500 dark:focus:bg-slate-900"
+        // text-base (16px) em todas as larguras: abaixo disto o iOS Safari faz
+        // zoom ao focar e o campo fica cortado. Inclui iPhone na horizontal,
+        // por isso não pode descer para text-sm no breakpoint sm.
+        className="w-full rounded-full border border-slate-300 bg-slate-100 py-2 pl-10 pr-4 text-base font-medium text-slate-900 placeholder:text-slate-500 shadow-sm outline-none transition-colors hover:border-slate-400 focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:hover:border-slate-500 dark:focus:bg-slate-900"
       />
       {open && (
         <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
