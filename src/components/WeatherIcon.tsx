@@ -27,6 +27,7 @@ export function WeatherIcon({
     <img
       src={`/icons/${name}.svg`}
       alt={label}
+      title={label}
       width={size}
       height={size}
       className={className}

@@ -21,6 +21,6 @@ export function conditionCircleClass(
   opts?: { date?: string },
 ): string {
   if (opts?.date && isNightHour(opts.date)) return "bg-slate-800"; // noite
-  if (isGreyCondition(weatherTypeId)) return "bg-slate-400"; // mau tempo
+  if (isGreyCondition(weatherTypeId)) return "bg-slate-600"; // mau tempo
   return "bg-sky-300"; // céu limpo ou nublado
 }

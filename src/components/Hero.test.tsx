@@ -66,7 +66,12 @@ describe("Hero", () => {
   it("dia chuvoso → círculo cinzento", () => {
     renderHero({ date: "2026-10-20T12:00:00", weatherTypeId: 6 });
     expect(screen.getByTestId("hero-icon-circle").className).toMatch(
-      /slate-4|slate-5|gray-/,
+      /slate-6|gray-/,
     );
+  });
+
+  it("o ícone tem tooltip com a condição", () => {
+    renderHero({ weatherTypeId: 1 });
+    expect(screen.getByTitle("Céu limpo")).toBeInTheDocument();
   });
 });

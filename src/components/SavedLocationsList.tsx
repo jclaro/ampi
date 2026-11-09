@@ -11,6 +11,7 @@ import {
 import { Star, X } from "lucide-react";
 import { WeatherIcon } from "./WeatherIcon";
 import { temp } from "@/lib/format";
+import { conditionCircleClass } from "@/lib/ipma/condition-color";
 
 interface Current {
   temp: number | null;
@@ -76,7 +77,13 @@ export function SavedLocationsList() {
               className="flex flex-1 items-center gap-3"
             >
               {current && (
-                <WeatherIcon id={current.weatherTypeId} size={32} />
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${conditionCircleClass(
+                    current.weatherTypeId,
+                  )}`}
+                >
+                  <WeatherIcon id={current.weatherTypeId} size={32} />
+                </span>
               )}
               <span className="font-medium">{loc.name}</span>
               {i === 0 && (

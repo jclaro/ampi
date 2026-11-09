@@ -16,7 +16,7 @@ describe("conditionCircleClass", () => {
 
   it("chuva → cinzento", () => {
     expect(conditionCircleClass(6, { date: "2026-10-20T12:00:00" })).toBe(
-      "bg-slate-400",
+      "bg-slate-600",
     );
   });
 
@@ -27,8 +27,8 @@ describe("conditionCircleClass", () => {
   });
 
   it("nevoeiro/neve → cinzento (mau tempo)", () => {
-    expect(conditionCircleClass(17)).toBe("bg-slate-400"); // nevoeiro
-    expect(conditionCircleClass(18)).toBe("bg-slate-400"); // neve
+    expect(conditionCircleClass(17)).toBe("bg-slate-600"); // nevoeiro
+    expect(conditionCircleClass(18)).toBe("bg-slate-600"); // neve
   });
 
   it("a noite tem prioridade: noite com chuva → azul escuro", () => {
@@ -42,6 +42,6 @@ describe("conditionCircleClass", () => {
   });
 
   it("sem date: chuva continua cinzento", () => {
-    expect(conditionCircleClass(9)).toBe("bg-slate-400");
+    expect(conditionCircleClass(9)).toBe("bg-slate-600");
   });
 });
